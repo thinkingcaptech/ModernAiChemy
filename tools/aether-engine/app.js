@@ -8,6 +8,30 @@ const state = {
 
 // System Prompts
 const PROMPTS = {
+    // Auto-profile avatar
+    profiler: `You are an expert marketer. 
+    Target Niche: {{NICHE}}
+    
+    Task: Create a highly specific Avatar Profile for this niche.
+    1. Identify a specific role (e.g. not just "Lawyer", but "Burned out Partner at a mid-sized firm").
+    2. Identify their single deepest, most visceral "bleeding neck" pain point.
+    
+    Output format: JSON-like string:
+    {"role": "...", "pain": "..."}
+    Return ONLY the JSON.`,
+
+    // Brainstorm angles
+    brainstormer: `You are a viral content strategist.
+    Topic: {{TOPIC}}
+    Target Audience: {{ROLE}}
+    
+    Task: Generate 3 distinct, high-converting angles/hooks for this topic.
+    1. Contrarian/Polarizing Angle
+    2. Story/Vulnerability Angle
+    3. Actionable/"How-To" Angle
+    
+    Output format: Just the 3 angles, numbered 1-3. Keep them punchy.`,
+
     // 1. The Content Generator
     transmuter: `You are a world-class direct response copywriter. 
     Take the raw input and transmute it into a high-converting {{FORMAT}}.
@@ -45,6 +69,110 @@ const PROMPTS = {
     
     At the very end, on a new line, output ONLY a number from 0-100 representing your Resonance Score.`
 };
+
+// --- PHASE I: Auto-Profile ---
+async function autoGenerateAvatar() {
+    const niche = document.getElementById('niche-input').value.trim();
+    if (!niche) { alert("Enter a niche first!"); return; }
+    
+    if (!ModernAlchemyKeys.requireAnyKey()) return;
+
+    const btn = document.getElementById('btn-auto-avatar');
+    const originalText = btn.innerText;
+    btn.innerText = "🔮 Divining...";
+    btn.disabled = true;
+
+    try {
+        const prompt = PROMPTS.profiler.replace('{{NICHE}}', niche);
+        const response = await ModernAlchemyKeys.callAI(prompt);
+
+        const parsed = extractAvatarProfile(response);
+        if (!parsed) {
+            throw new Error('Unable to parse AI response.');
+        }
+
+        document.getElementById('avatar-role').value = parsed.role || '';
+        document.getElementById('avatar-pain').value = parsed.pain || '';
+
+    } catch (e) {
+        console.error('Auto-profile error:', e, e?.message);
+        alert('Auto-profile failed to read the AI response. Please try again or edit manually.');
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
+
+// --- PHASE II: Brainstorm Angles ---
+async function brainstormAngles() {
+    const topic = document.getElementById('topic-input').value.trim();
+    if (!topic) { alert("Enter a topic first!"); return; }
+    if (!state.avatar.role) { alert("Define your avatar in Step I first!"); return; }
+
+    if (!ModernAlchemyKeys.requireAnyKey()) return;
+
+    const btn = document.getElementById('btn-brainstorm');
+    const resultsDiv = document.getElementById('idea-results');
+    
+    btn.innerText = "⚡";
+    btn.disabled = true;
+    resultsDiv.innerHTML = '<div class="text-xs text-gray-500 animate-pulse">Summoning concepts...</div>';
+    resultsDiv.classList.remove('hidden');
+
+    try {
+        const prompt = PROMPTS.brainstormer
+            .replace('{{TOPIC}}', topic)
+            .replace('{{ROLE}}', state.avatar.role);
+            
+        const response = await ModernAlchemyKeys.callAI(prompt);
+        
+        resultsDiv.innerHTML = '';
+        const lines = response.split('\n').filter(l => l.trim().length > 5);
+        
+        lines.forEach(line => {
+            const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/"/g, '').trim();
+            if (!cleanLine) return;
+            const ideaBtn = document.createElement('button');
+            ideaBtn.className = "w-full text-left p-2 text-xs text-gray-300 border border-gray-700 hover:border-tctc-gold hover:text-tctc-gold rounded transition bg-black/40";
+            ideaBtn.innerText = cleanLine;
+            ideaBtn.onclick = () => {
+                document.getElementById('content-input').value = `TOPIC: ${topic}\nANGLE: ${cleanLine}\n\n[Expand on this idea...]`;
+            };
+            resultsDiv.appendChild(ideaBtn);
+        });
+        
+    } catch (e) {
+        resultsDiv.innerHTML = `<div class="text-xs text-red-500">Error: ${e.message}</div>`;
+    } finally {
+        btn.innerText = "⚡ Spark";
+        btn.disabled = false;
+    }
+}
+
+function extractAvatarProfile(raw) {
+    if (!raw) return null;
+
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+        try {
+            const data = JSON.parse(jsonMatch[0]);
+            if (data.role || data.pain) return data;
+        } catch (err) {
+            console.warn('JSON parse failed:', err);
+        }
+    }
+
+    const roleMatch = raw.match(/role[^:]*:\s*["']?(.+?)["']?(?:[\n\r]|$)/i);
+    const painMatch = raw.match(/pain[^:]*:\s*["']?(.+?)["']?(?:[\n\r]|$)/i);
+
+    if (roleMatch || painMatch) {
+        return {
+            role: roleMatch ? roleMatch[1].trim() : '',
+            pain: painMatch ? painMatch[1].trim() : ''
+        };
+    }
+    return null;
+}
 
 // Navigation
 function goToStep(step) {
