@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user has paid
+    function hasPaid() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.hasLifetimeAccess == true;
+    }
+    
+    // Helper function to check authentication
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    // Users collection
+    match /users/{uid} {
+      // Only authenticated users can read/write their own user document
+      allow read, write: if isAuthenticated() && isOwner(uid);
+      
+      // Private API keys subcollection (encrypted storage)
+      match /private/{document=**} {
+        allow read, write: if isAuthenticated() && isOwner(uid);
+      }
+      
+      // User courses progress
+      match /courses/{courseId} {
+        allow read, write: if isAuthenticated() && isOwner(uid) && hasPaid();
+      }
+      
+      // User blog builder data
+      match /blogs/{blogId} {
+        allow read, write: if isAuthenticated() && isOwner(uid) && hasPaid();
+      }
+      
+      // User CRM leads
+      match /leads/{leadId} {
+        allow read, write: if isAuthenticated() && isOwner(uid) && hasPaid();
+      }
+      
+      // User diagnostic results
+      match /diagnostics/{diagnosticId} {
+        allow read, write: if isAuthenticated() && isOwner(uid) && hasPaid();
+      }
+      
+      // User offer architectures
+      match /offers/{offerId} {
+        allow read, write: if isAuthenticated() && isOwner(uid) && hasPaid();
+      }
+    }
+
+    // Payment records (read-only for users)
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        request.auth.token.admin == true
+      );
+      allow create: if isAuthenticated();
+    }
+
+    // Stripe checkout sessions (created by Cloud Functions)
+    match /checkout_sessions/{sessionId} {
+      allow read: if isAuthenticated() && resource.data.uid == request.auth.uid;
+      allow create: if isAuthenticated();
+    }
+
+    // Admin collection for system data
+    match /admin/{document=**} {
+      allow read, write: if request.auth.token.admin == true;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

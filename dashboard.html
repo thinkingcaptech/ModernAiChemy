@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Modern Alchemy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Dark Mode (Default) */
+            --bg-primary: #1a0a0f;
+            --bg-secondary: #2b0f12;
+            --text-primary: #f4e0a9;
+            --text-secondary: #C0C0C0;
+            --text-accent: #d4af37;
+            --border-color: #d4af37;
+            --card-bg: rgba(43, 15, 18, 0.95);
+            --shadow-gold: rgba(212, 175, 55, 0.4);
+        }
+
+        /* Light Mode - High Contrast Parchment on Eggshell */
+        body[data-theme="light"] {
+            --bg-primary: #FAF8F3;          /* Eggshell white */
+            --bg-secondary: #F5F0E1;        /* Warmer eggshell */
+            --text-primary: #1A0A05;        /* Near black */
+            --text-secondary: #3D2817;      /* Dark brown */
+            --text-accent: #8B5A00;         /* Dark amber */
+            --border-color: #8B6914;        /* Solid gold */
+            --card-bg: linear-gradient(145deg, #F4ECD8 0%, #EDE4CC 100%);
+            --shadow-gold: rgba(139, 90, 0, 0.25);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--text-accent), #8B6914);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow-gold);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px var(--shadow-gold);
+        }
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header/Navigation */
+        header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding: 20px 0;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-accent);
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--text-accent);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4af37, #f4e0a9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1a0a0f;
+            font-size: 18px;
+        }
+
+        .btn-logout {
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #dc3545;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(220, 53, 69, 0.3);
+        }
+
+        /* Hero/Welcome */
+        .welcome {
+            padding: 60px 0 40px;
+        }
+
+        .welcome h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #e8d5a8;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        /* Tools Grid */
+        .tools-section {
+            padding: 40px 0;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .tool-card {
+            background: rgba(43, 15, 18, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+            border-color: #f4e0a9;
+        }
+
+        .tool-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .tool-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #d4af37;
+        }
+
+        .tool-card p {
+            color: #e8d5a8;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tool-card .btn-enter {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e0a9 100%);
+            color: #1a0a0f;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .tool-card .btn-enter:hover {
+            transform: scale(1.05);
+        }
+
+        /* Settings Card */
+        .settings-card {
+            background: rgba(43, 15, 18, 0.8);
+            border: 2px solid #f4e0a9;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            grid-column: 1 / -1;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(244, 224, 169, 0.3);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .info-box h3 {
+            color: #d4af37;
+            margin-bottom: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            color: #e8d5a8;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 2px solid #d4af37;
+            color: #999;
+            margin-top: 80px;
+        }
+
+        /* Loading state */
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #d4af37;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg) }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome h1 {
+                font-size: 32px;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-inner {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            nav {
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+
+        .access-denied {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .access-denied h1 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #d4af37;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+
+        .access-denied p {
+            color: #e8d5a8;
+            margin-bottom: 30px;
+        }
+
+        .access-denied a {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e0a9 100%);
+            color: #1a0a0f;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .access-denied a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="/dashboard.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                    <img src="/logo.jpg" alt="Modern Alchemy" style="height: 45px; width: 45px; border-radius: 8px; object-fit: cover;">
+                    <span>Modern Alchemy</span>
+                </a>
+                <nav>
+                    <a href="/dashboard.html">🏠 Home</a>
+                    <a href="/settings.html">⚙️ Settings</a>
+                    <div class="user-menu">
+                        <span id="userDisplayName">User</span>
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <section class="welcome">
+            <h1>Welcome to Your Business Suite</h1>
+            <p>Everything you need to run a modern digital business - all in one place.</p>
+        </section>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>🔑 Bring Your Own AI Keys</h3>
+            <p>Add your Gemini, OpenAI, Anthropic, or Grok API keys in Settings. Full privacy, transparent pricing.</p>
+        </div>
+
+        <!-- Tools Grid - Static HTML for reliability -->
+        <section class="tools-section">
+            <div class="tools-grid">
+                <!-- Settings Card - Featured at Top -->
+                <div class="settings-card" onclick="window.location.href='/settings.html'">
+                    <div class="tool-icon">🔑</div>
+                    <h3>Settings & API Keys</h3>
+                    <p>Add your own API keys (Gemini, OpenAI, Anthropic, Grok) for complete privacy.</p>
+                    <button class="btn-enter">Configure API Keys</button>
+                </div>
+
+                <!-- Tool 1: Business Diagnostic -->
+                <div class="tool-card" onclick="window.location.href='/tools/diagnostic/'">
+                    <div class="tool-icon">🏥</div>
+                    <h3>Business Diagnostic</h3>
+                    <p>Assess business bottlenecks and get AI-powered recommendations instantly.</p>
+                    <button class="btn-enter">Run Diagnostic</button>
+                </div>
+
+                <!-- Tool 2: Blog Builder -->
+                <div class="tool-card" onclick="window.location.href='/tools/blog-builder/'">
+                    <div class="tool-icon">📝</div>
+                    <h3>Blog Builder</h3>
+                    <p>Generate 1-200 localized blog posts from templates in seconds.</p>
+                    <button class="btn-enter">Create Content</button>
+                </div>
+
+                <!-- Tool 3: Offer Architect -->
+                <div class="tool-card" onclick="window.location.href='/tools/offer-architect/'">
+                    <div class="tool-icon">⚗️</div>
+                    <h3>Offer Architect</h3>
+                    <p>Generate complete business offers with pricing, funnels, and marketing copy.</p>
+                    <button class="btn-enter">Build Offers</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 Modern Alchemy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Handle logout
+        function handleLogout() {
+            window.location.href = '/index.html';
+        }
+    </script>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">🌙</button>
+
+    <script>
+        // Theme Toggle Logic
+        (function() {
+            const toggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('alchemy-theme') || 'dark';
+            
+            // Apply saved theme
+            if (savedTheme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                toggle.textContent = '☀️';
+            } else {
+                body.removeAttribute('data-theme');
+                toggle.textContent = '🌙';
+            }
+            
+            // Toggle functionality
+            toggle.addEventListener('click', () => {
+                const isLight = body.getAttribute('data-theme') === 'light';
+                if (isLight) {
+                    body.removeAttribute('data-theme');
+                    localStorage.setItem('alchemy-theme', 'dark');
+                    toggle.textContent = '🌙';
+                } else {
+                    body.setAttribute('data-theme', 'light');
+                    localStorage.setItem('alchemy-theme', 'light');
+                    toggle.textContent = '☀️';
+                }
+            });
+        })();
+    </script>
+    <!-- Auth Guard - any authenticated user can access dashboard -->
+    <script src="/js/auth-guard.js" data-required-tool="any"></script>
+</body>
+</html>

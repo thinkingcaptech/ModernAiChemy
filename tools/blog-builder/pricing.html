@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pricing - Local Blog Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body class="bg-black text-white min-h-screen flex justify-center p-6">
+  <div class="w-full max-w-7xl space-y-8">
+    <header class="text-center space-y-4 mb-8">
+      <h1 class="text-5xl font-bold">⚗️ Simple, Transparent Pricing</h1>
+      <p class="text-gray-400 text-lg">Choose the plan that fits your agency's needs</p>
+      <a href="/index.html" class="inline-block text-sm text-gray-400 hover:text-white">← Back to App</a>
+    </header>
+
+    <!-- Pricing Cards -->
+    <div class="grid md:grid-cols-3 gap-6 mt-12">
+      <!-- Starter Plan -->
+      <div class="glass-panel p-8 space-y-6 hover:border-yellow-500 transition transform hover:scale-105">
+        <div>
+          <h3 class="text-2xl font-bold">Starter</h3>
+          <p class="text-gray-400 text-sm mt-2">Perfect for small agencies getting started</p>
+        </div>
+        
+        <div>
+          <p class="text-5xl font-bold text-yellow-400">$29<span class="text-2xl text-gray-400">/mo</span></p>
+        </div>
+
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">50 localized articles per month</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">30 industry templates</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">ZIP export</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Basic support</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-gray-600 mr-2">✗</span>
+            <span class="text-gray-500">WordPress export</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-gray-600 mr-2">✗</span>
+            <span class="text-gray-500">Project history</span>
+          </li>
+        </ul>
+
+        <button 
+          onclick="selectPlan('starter')"
+          class="btn-primary w-full py-4 rounded-xl font-bold transition">
+          ⚗️ Get Started
+        </button>
+      </div>
+
+      <!-- Agency Plan (Popular) -->
+      <div class="glass-panel p-8 space-y-6 relative transform scale-105 hover:scale-110 transition">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-6 py-2 rounded-full text-xs font-bold shadow-lg">✨ MOST POPULAR</span>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold">Agency</h3>
+          <p class="text-gray-400 text-sm mt-2">For growing agencies and franchises</p>
+        </div>
+        
+        <div>
+          <p class="text-5xl font-bold text-yellow-400">$99<span class="text-2xl text-gray-400">/mo</span></p>
+        </div>
+
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Unlimited localized articles</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">All 30 industry templates</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Save custom templates</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">ZIP & WordPress XML export</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Full project history</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Priority support</span>
+          </li>
+        </ul>
+
+        <button 
+          onclick="selectPlan('agency')"
+          class="w-full py-3 rounded-xl bg-yellow-400 text-black font-bold hover:bg-white transition">
+          Get Started
+        </button>
+      </div>
+
+      <!-- Enterprise Plan -->
+      <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 space-y-6 hover:border-yellow-500 transition">
+        <div>
+          <h3 class="text-2xl font-bold text-white">Enterprise</h3>
+          <p class="text-gray-400 text-sm mt-2">For large operations and white-label</p>
+        </div>
+        
+        <div>
+          <p class="text-5xl font-bold text-yellow-400">$299<span class="text-2xl text-gray-400">/mo</span></p>
+        </div>
+
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Everything in Agency</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Multi-brand support</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">White-label branding</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Full source code access</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Custom AI key configuration</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Dedicated support</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-yellow-400 mr-2">✓</span>
+            <span class="text-gray-300">Custom integrations</span>
+          </li>
+        </ul>
+
+        <button 
+          onclick="selectPlan('enterprise')"
+          class="w-full py-3 rounded-xl bg-neutral-800 border border-yellow-500 text-white font-bold hover:bg-neutral-700 transition">
+          Contact Sales
+        </button>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="max-w-3xl mx-auto mt-16 space-y-6">
+      <h2 class="text-3xl font-bold text-center text-white mb-8">Frequently Asked Questions</h2>
+      
+      <div class="space-y-4">
+        <details class="bg-neutral-900 border border-neutral-700 rounded-xl p-4">
+          <summary class="text-lg font-semibold text-white cursor-pointer">How does billing work?</summary>
+          <p class="text-gray-400 text-sm mt-2">All plans are billed monthly. You can cancel or upgrade anytime without penalty.</p>
+        </details>
+
+        <details class="bg-neutral-900 border border-neutral-700 rounded-xl p-4">
+          <summary class="text-lg font-semibold text-white cursor-pointer">Can I change plans later?</summary>
+          <p class="text-gray-400 text-sm mt-2">Yes! You can upgrade or downgrade your plan at any time from your account dashboard.</p>
+        </details>
+
+        <details class="bg-neutral-900 border border-neutral-700 rounded-xl p-4">
+          <summary class="text-lg font-semibold text-white cursor-pointer">What payment methods do you accept?</summary>
+          <p class="text-gray-400 text-sm mt-2">We accept all major credit cards via Stripe. Enterprise customers can also pay by invoice.</p>
+        </details>
+
+        <details class="bg-neutral-900 border border-neutral-700 rounded-xl p-4">
+          <summary class="text-lg font-semibold text-white cursor-pointer">Is there a free trial?</summary>
+          <p class="text-gray-400 text-sm mt-2">We offer a 7-day free trial on the Agency plan. No credit card required to start.</p>
+        </details>
+      </div>
+    </div>
+
+    <!-- Test Mode Notice -->
+    <div class="max-w-3xl mx-auto mt-12 p-6 bg-yellow-400/10 border border-yellow-500 rounded-xl">
+      <p class="text-sm text-yellow-400">
+        <strong>Development Mode:</strong> This pricing page is currently in test mode. 
+        Stripe integration is ready but set to test keys. Replace with production keys before launch.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Stripe with test key
+    // Replace with your production key: pk_live_xxxxx
+    const stripe = Stripe('pk_test_51234567890abcdefghijklmnopqrstuvwxyz');
+
+    const STRIPE_PRICE_IDS = {
+      starter: 'price_test_starter_123',
+      agency: 'price_test_agency_456',
+      enterprise: 'price_test_enterprise_789'
+    };
+
+    async function selectPlan(plan) {
+      if (plan === 'enterprise') {
+        alert('Enterprise plan requires custom setup. Please contact sales@example.com');
+        return;
+      }
+
+      const priceId = STRIPE_PRICE_IDS[plan];
+      
+      if (!priceId) {
+        alert('This plan is not yet configured. Please contact support.');
+        return;
+      }
+
+      try {
+        // In production, this would redirect to Stripe Checkout
+        alert(`This would redirect to Stripe Checkout for the ${plan} plan.\n\nIn production:\n1. Set your Stripe publishable key\n2. Create price IDs in Stripe Dashboard\n3. Enable the checkout flow\n\nFor now, this is demo mode.`);
+
+        // Production code would look like:
+        /*
+        const { error } = await stripe.redirectToCheckout({
+          lineItems: [{ price: priceId, quantity: 1 }],
+          mode: 'subscription',
+          successUrl: window.location.origin + '/success.html',
+          cancelUrl: window.location.origin + '/pricing.html'
+        });
+
+        if (error) {
+          console.error(error);
+          alert('Failed to start checkout. Please try again.');
+        }
+        */
+      } catch (err) {
+        console.error(err);
+        alert('An error occurred. Please try again.');
+      }
+    }
+  </script>
+</body>
+</html>

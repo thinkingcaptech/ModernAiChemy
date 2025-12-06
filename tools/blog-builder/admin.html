@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Local Blog Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body class="bg-black text-white min-h-screen flex justify-center p-6">
+  <div class="w-full max-w-7xl glass-panel p-8 space-y-6">
+    <header class="flex justify-between items-center pb-6 border-b" style="border-color: var(--border-color);">
+      <h1 class="text-4xl font-bold">⚗️ Admin Panel</h1>
+      <a href="/index.html" class="text-xs text-gray-400 hover:text-white">← Back to App</a>
+    </header>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="max-w-md mx-auto space-y-4">
+      <p class="text-sm text-gray-300">Enter admin password to access the dashboard</p>
+      <input 
+        type="password" 
+        id="adminPassword" 
+        class="input"
+        placeholder="Admin password"
+        onkeypress="if(event.key==='Enter') loginAdmin()"
+      />
+      <button 
+        onclick="loginAdmin()"
+        class="btn-primary w-full py-4 rounded-xl font-bold transition">
+        🔓 Enter Admin Portal
+      </button>
+      <p id="loginError" class="text-xs text-red-400 hidden">Incorrect password</p>
+      <div class="mt-6 p-4 bg-neutral-800 rounded-lg border border-neutral-700">
+        <p class="text-xs text-gray-400">
+          <strong>Default password:</strong> admin123<br>
+          <span class="text-yellow-400">Note:</span> Change this in production by setting the ADMIN_PASSWORD environment variable.
+        </p>
+      </div>
+    </div>
+
+    <!-- Admin Content (hidden until logged in) -->
+    <div id="adminContent" class="hidden space-y-6">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-neutral-800 border border-neutral-700 rounded-xl p-4">
+          <p class="text-xs text-gray-400 mb-1">Total Projects</p>
+          <p id="totalProjects" class="text-3xl font-bold text-yellow-400">0</p>
+        </div>
+        <div class="bg-neutral-800 border border-neutral-700 rounded-xl p-4">
+          <p class="text-xs text-gray-400 mb-1">Total Articles Generated</p>
+          <p id="totalArticles" class="text-3xl font-bold text-yellow-400">0</p>
+        </div>
+        <div class="bg-neutral-800 border border-neutral-700 rounded-xl p-4">
+          <p class="text-xs text-gray-400 mb-1">Total Cities Covered</p>
+          <p id="totalCities" class="text-3xl font-bold text-yellow-400">0</p>
+        </div>
+      </div>
+
+      <!-- Projects List -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold text-white">Recent Projects</h2>
+          <button 
+            onclick="loadProjects()"
+            class="px-4 py-2 bg-neutral-800 border border-yellow-500 rounded-lg text-xs hover:bg-neutral-700">
+            Refresh
+          </button>
+        </div>
+
+        <div id="projectsContainer" class="space-y-3">
+          <p class="text-sm text-gray-400">Loading projects...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "admin123"; // In production, this should be set via environment variable
+
+    function loginAdmin() {
+      const password = document.getElementById("adminPassword").value;
+      const loginError = document.getElementById("loginError");
+      
+      if (password === ADMIN_PASSWORD) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("adminContent").classList.remove("hidden");
+        loginError.classList.add("hidden");
+        loadProjects();
+      } else {
+        loginError.classList.remove("hidden");
+      }
+    }
+
+    async function loadProjects() {
+      const container = document.getElementById("projectsContainer");
+      container.innerHTML = '<p class="text-sm text-gray-400">Loading projects...</p>';
+
+      try {
+        const res = await fetch("/api/getProjects");
+        if (!res.ok) throw new Error("Failed to fetch projects");
+
+        const data = await res.json();
+        const projects = data.projects || [];
+
+        if (projects.length === 0) {
+          container.innerHTML = '<p class="text-sm text-gray-400">No projects found yet.</p>';
+          updateStats(0, 0, 0);
+          return;
+        }
+
+        // Calculate stats
+        let totalArticles = 0;
+        const citiesSet = new Set();
+
+        projects.forEach(p => {
+          if (p.posts) totalArticles += p.posts.length;
+          if (p.cities) p.cities.forEach(c => citiesSet.add(c));
+        });
+
+        updateStats(projects.length, totalArticles, citiesSet.size);
+
+        // Render projects
+        container.innerHTML = "";
+        projects.forEach(project => {
+          const card = createProjectCard(project);
+          container.appendChild(card);
+        });
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p class="text-sm text-red-400">Failed to load projects. Make sure Firebase is configured.</p>';
+      }
+    }
+
+    function updateStats(totalProjects, totalArticles, totalCities) {
+      document.getElementById("totalProjects").textContent = totalProjects;
+      document.getElementById("totalArticles").textContent = totalArticles;
+      document.getElementById("totalCities").textContent = totalCities;
+    }
+
+    function createProjectCard(project) {
+      const card = document.createElement("div");
+      card.className = "bg-neutral-800 border border-neutral-700 rounded-xl p-4 space-y-2";
+
+      const header = document.createElement("div");
+      header.className = "flex justify-between items-start";
+
+      const info = document.createElement("div");
+      info.className = "flex-1";
+
+      const date = new Date(project.createdAt).toLocaleString();
+      const citiesCount = project.cities?.length || 0;
+      const postsCount = project.posts?.length || 0;
+
+      info.innerHTML = `
+        <p class="text-sm font-semibold text-yellow-300">${date}</p>
+        <p class="text-xs text-gray-400 mt-1">
+          ${citiesCount} cities · ${postsCount} posts generated
+        </p>
+        <p class="text-xs text-gray-400">
+          Tone: ${project.tone || 'neutral'} · Length: ${project.length || 'medium'}
+        </p>
+      `;
+
+      const actions = document.createElement("div");
+      actions.className = "flex gap-2";
+
+      const expandBtn = document.createElement("button");
+      expandBtn.className = "text-xs text-yellow-400 underline hover:text-white";
+      expandBtn.textContent = "View Details";
+      expandBtn.onclick = () => toggleDetails(card, project);
+
+      actions.appendChild(expandBtn);
+      header.appendChild(info);
+      header.appendChild(actions);
+      card.appendChild(header);
+
+      const details = document.createElement("div");
+      details.className = "hidden mt-4 pt-4 border-t border-neutral-600 space-y-2";
+      details.id = `details-${project.id}`;
+
+      details.innerHTML = `
+        <div class="space-y-2">
+          <div>
+            <p class="text-xs font-semibold text-gray-300 mb-1">Base Article Preview:</p>
+            <pre class="text-xs text-gray-400 bg-black rounded p-2 max-h-32 overflow-auto">${(project.baseArticle || '').substring(0, 300)}...</pre>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-gray-300 mb-1">Target Cities:</p>
+            <p class="text-xs text-gray-400">${(project.cities || []).join(", ")}</p>
+          </div>
+        </div>
+      `;
+
+      card.appendChild(details);
+      return card;
+    }
+
+    function toggleDetails(card, project) {
+      const details = card.querySelector(`#details-${project.id}`);
+      details.classList.toggle("hidden");
+    }
+  </script>
+</body>
+</html>

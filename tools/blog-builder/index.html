@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Local Keyword Blog Builder | TCTC Systems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body class="bg-black text-white min-h-screen flex justify-center p-6">
+  <div class="w-full max-w-6xl glass-panel p-8 space-y-6">
+    <header class="flex justify-between items-center pb-6 border-b" style="border-color: var(--border-color);">
+      <div class="flex items-center gap-4">
+        <a href="/dashboard.html" class="flex items-center">
+          <img src="/logo.jpg" alt="Modern Alchemy" style="height: 50px; width: auto; border-radius: 8px;">
+        </a>
+        <h1 class="text-3xl font-bold" style="font-family: 'Cormorant Garamond', serif; color: var(--text-accent);">Local Keyword Blog Builder</h1>
+      </div>
+      <div class="flex gap-4 items-center">
+        <a href="/settings.html" class="text-xs hover:text-white transition" style="color: var(--text-secondary);">Settings</a>
+        <span class="text-xs" style="color: var(--text-secondary);">Modern Alchemy</span>
+      </div>
+    </header>
+
+    <section class="grid md:grid-cols-2 gap-6">
+      <!-- Input panel -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Industry Template</label>
+          <select id="templateSelect" class="input" style="height: auto; min-height: 2.75rem;">
+            <option value="">Choose a template...</option>
+            <optgroup label="Home Services">
+              <option value="plumber">Plumber SEO Article</option>
+              <option value="roofer">Roofer SEO Article</option>
+              <option value="electrician">Electrician SEO Article</option>
+              <option value="hvac">HVAC SEO Article</option>
+              <option value="locksmith">Locksmith SEO Article</option>
+              <option value="landscaping">Landscaping SEO Article</option>
+              <option value="cleaning">Cleaning Service SEO Article</option>
+              <option value="pestcontrol">Pest Control SEO Article</option>
+              <option value="poolservice">Pool Service SEO Article</option>
+            </optgroup>
+            <optgroup label="Automotive">
+              <option value="autorepair">Auto Repair SEO Article</option>
+              <option value="carwash">Car Wash SEO Article</option>
+            </optgroup>
+            <optgroup label="Healthcare & Wellness">
+              <option value="dentist">Dentist SEO Article</option>
+              <option value="chiropractor">Chiropractor SEO Article</option>
+              <option value="veterinarian">Veterinarian SEO Article</option>
+              <option value="massage">Massage Therapy SEO Article</option>
+            </optgroup>
+            <optgroup label="Professional Services">
+              <option value="lawyer">Lawyer SEO Article</option>
+              <option value="attorney">Criminal Defense Attorney SEO Article</option>
+              <option value="accountant">Accountant SEO Article</option>
+              <option value="insurance">Insurance Agency SEO Article</option>
+              <option value="inspector">Home Inspector SEO Article</option>
+              <option value="realestate">Real Estate SEO Article</option>
+            </optgroup>
+            <optgroup label="Personal Services">
+              <option value="trainer">Personal Trainer SEO Article</option>
+              <option value="photographer">Wedding Photographer SEO Article</option>
+              <option value="salon">Hair Salon SEO Article</option>
+              <option value="florist">Florist SEO Article</option>
+            </optgroup>
+            <optgroup label="Businesses">
+              <option value="restaurant">Restaurant SEO Article</option>
+              <option value="gym">Gym & Fitness Center SEO Article</option>
+              <option value="daycare">Daycare SEO Article</option>
+              <option value="tutoring">Tutoring Service SEO Article</option>
+              <option value="moving">Moving Company SEO Article</option>
+            </optgroup>
+            <optgroup label="💾 Custom Templates" id="customTemplatesGroup" style="display: none;">
+            </optgroup>
+          </select>
+          <div class="flex gap-2 mt-2">
+            <button id="saveTemplateBtn" class="text-xs px-3 py-1 rounded transition" style="background: rgba(212, 175, 55, 0.1); color: var(--text-accent); border: 1px solid var(--text-accent);">
+              💾 Save as Custom Template
+            </button>
+            <button id="manageTemplatesBtn" class="text-xs px-3 py-1 rounded transition" style="background: rgba(212, 175, 55, 0.1); color: var(--text-accent); border: 1px solid var(--text-accent);">
+              ⚙️ Manage Custom Templates
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Base article template</label>
+          <textarea id="baseArticle" class="input" rows="12"
+            placeholder="Write or paste a generic article using placeholders like [CITY] and [SERVICE]."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1 mt-4" style="color: var(--text-secondary);">Target locations (one per line)</label>
+          <textarea id="cities" class="input" rows="6"
+            placeholder="Try these sample cities:&#10;Dallas, TX&#10;Austin, TX&#10;San Antonio, TX&#10;Phoenix, AZ&#10;Denver, CO">Dallas, TX
+Austin, TX
+Houston, TX</textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Tone</label>
+            <select id="tone" class="input h-10">
+              <option value="neutral">Neutral</option>
+              <option value="professional">Professional</option>
+              <option value="friendly">Friendly</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Length</label>
+            <select id="length" class="input h-10">
+              <option value="short">Short</option>
+              <option value="medium" selected>Medium</option>
+              <option value="long">Long</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="generateBtn"
+          class="btn-primary mt-4 w-full py-4 rounded-xl font-bold transition">
+          ⚗️ Generate Localized Posts
+        </button>
+
+        <p id="status" class="text-xs text-gray-400 mt-2"></p>
+      </div>
+
+      <!-- Results panel -->
+      <div class="flex flex-col h-full">
+        <div id="resultsContainer"
+          class="flex-1 overflow-y-auto border border-neutral-700 rounded-xl p-4 space-y-2 text-sm min-h-[400px]">
+          <p class="text-gray-400 text-xs">Generated posts will appear here.</p>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-4">
+          <button id="downloadZipBtn"
+            class="btn-secondary py-3 rounded-xl transition"
+            disabled>
+            📦 Download ZIP
+          </button>
+          <button id="exportWPBtn"
+            class="btn-secondary py-3 rounded-xl transition"
+            disabled>
+            Export WP XML
+          </button>
+          <button id="copyAllBtn"
+            class="py-2 bg-neutral-800 border border-neutral-600 rounded-xl text-xs disabled:opacity-30 hover:bg-neutral-700"
+            disabled>
+            Copy All
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">🌙</button>
+
+  <script>
+    // Theme Toggle Logic
+    (function() {
+      const toggle = document.getElementById('themeToggle');
+      const body = document.body;
+      
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem('alchemy-theme') || 'dark';
+      
+      // Apply saved theme
+      if (savedTheme === 'light') {
+        body.setAttribute('data-theme', 'light');
+        toggle.textContent = '☀️';
+      } else {
+        body.removeAttribute('data-theme');
+        toggle.textContent = '🌙';
+      }
+      
+      // Toggle functionality
+      toggle.addEventListener('click', () => {
+        const isLight = body.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          body.removeAttribute('data-theme');
+          localStorage.setItem('alchemy-theme', 'dark');
+          toggle.textContent = '🌙';
+        } else {
+          body.setAttribute('data-theme', 'light');
+          localStorage.setItem('alchemy-theme', 'light');
+          toggle.textContent = '☀️';
+        }
+      });
+    })();
+  </script>
+  <!-- Auth Guard - requires blog-builder tool access -->
+  <script src="/js/auth-guard.js" data-required-tool="blog-builder"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

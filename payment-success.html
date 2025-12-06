@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Modern Alchemy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #1a0a0f 0%, #2b0f12 50%, #1a0a0f 100%);
+            color: #f4e0a9;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .success-container {
+            background: rgba(43, 15, 18, 0.9);
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            padding: 50px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: bounce 1s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #e8d5a8;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .order-details {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .order-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-detail-label {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .order-detail-value {
+            color: #f4e0a9;
+        }
+
+        .status-message {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #51cf66;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .next-steps {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 4px solid #d4af37;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .next-steps h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+        }
+
+        .next-steps ol {
+            margin-left: 20px;
+            color: #e8d5a8;
+        }
+
+        .next-steps li {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e0a9 100%);
+            color: #1a0a0f;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+        }
+
+        .btn-secondary:hover {
+            background: #d4af37;
+            color: #1a0a0f;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #d4af37;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg) }
+        }
+
+        .email-note {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #e8d5a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">🎉</div>
+        <h1>Welcome!</h1>
+        <p>Your payment has been received successfully.</p>
+
+        <div class="status-message" id="statusMessage">
+            <span class="loading"></span> Processing your order...
+        </div>
+
+        <div class="order-details" id="orderDetails" style="display: none;">
+            <div class="order-detail-row">
+                <span class="order-detail-label">Session ID:</span>
+                <span class="order-detail-value" id="sessionId" style="word-break: break-all; font-size: 12px;">-</span>
+            </div>
+            <div class="order-detail-row">
+                <span class="order-detail-label">Status:</span>
+                <span class="order-detail-value">✓ Confirmed</span>
+            </div>
+        </div>
+
+        <div class="next-steps">
+            <h3>Next Steps:</h3>
+            <ol>
+                <li>Check your email for a confirmation</li>
+                <li><strong>Create your account</strong> using the same email you used for payment</li>
+                <li>You'll have immediate access to your tools!</li>
+                <li>Go to Settings to add your API keys (Gemini, OpenAI, Anthropic, Grok)</li>
+            </ol>
+        </div>
+
+        <div class="email-note">
+            <strong>Important:</strong> Use the exact same email address you used for payment when creating your account.
+        </div>
+
+        <div class="button-group">
+            <a href="/login.html#create-account" class="btn btn-primary" onclick="localStorage.setItem('showSignup', 'true')">Create My Account</a>
+            <a href="/login.html" class="btn btn-secondary">I Already Have an Account</a>
+        </div>
+
+        <p style="margin-top: 30px; font-size: 12px; color: #999;">
+            Thank you for becoming a Modern Alchemy user! You're now part of the Business in a Box revolution.
+        </p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBn6llsnL954gaxZn8eWT2OuyhXtLXzEUA",
+            authDomain: "modern-aichemy-dashboard-2025.firebaseapp.com",
+            projectId: "modern-aichemy-dashboard-dec25",
+            storageBucket: "modern-aichemy-dashboard-dec25.appspot.com",
+            messagingSenderId: "884898733697",
+            appId: "1:884898733697:web:abc123def456"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Get session ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        if (sessionId) {
+            document.getElementById('sessionId').textContent = sessionId;
+
+            // Wait a moment for webhook to process, then show confirmation
+            setTimeout(() => {
+                document.getElementById('statusMessage').style.display = 'none';
+                document.getElementById('orderDetails').style.display = 'block';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
