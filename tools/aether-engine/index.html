@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Engine | Modern Alchemy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            tctc: {
+              primary: '#1a0a0f',
+              secondary: '#2b0f12',
+              gold: '#D4AF37',
+              goldHover: '#F4CF57',
+            }
+          },
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'serif'],
+            sans: ['Lato', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background-color: #1a0a0f; color: #f4e0a9; font-family: 'Lato', sans-serif; }
+    .glass-panel {
+      background: rgba(43, 15, 18, 0.9);
+      border: 1px solid #D4AF37;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+    }
+    .step-active { border-color: #D4AF37; color: #D4AF37; background: rgba(212, 175, 55, 0.1); }
+    .step-inactive { border-color: #3D1111; color: #666; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <header class="border-b border-tctc-gold/30 bg-tctc-secondary/80 p-4 flex justify-between items-center sticky top-0 z-50 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <a href="/dashboard.html" class="text-2xl font-serif font-bold text-tctc-gold hover:opacity-80 transition">
+        ← Modern Alchemy
+      </a>
+      <span class="text-gray-500 text-sm hidden md:inline">| The Aether Engine</span>
+    </div>
+    <div class="flex gap-2">
+      <span class="px-3 py-1 border border-tctc-gold/50 rounded text-xs uppercase tracking-widest text-tctc-gold">Marketing Sandbox</span>
+    </div>
+  </header>
+
+  <main class="flex-1 container mx-auto p-4 md:p-8 max-w-6xl">
+    
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div id="step1-indicator" class="step-active border-b-2 pb-2 text-center transition-all">
+        <span class="block text-xs uppercase tracking-widest mb-1">Phase I</span>
+        <span class="font-serif font-bold text-lg">Summon Avatar</span>
+      </div>
+      <div id="step2-indicator" class="step-inactive border-b-2 pb-2 text-center transition-all">
+        <span class="block text-xs uppercase tracking-widest mb-1">Phase II</span>
+        <span class="font-serif font-bold text-lg">Transmute Content</span>
+      </div>
+      <div id="step3-indicator" class="step-inactive border-b-2 pb-2 text-center transition-all">
+        <span class="block text-xs uppercase tracking-widest mb-1">Phase III</span>
+        <span class="font-serif font-bold text-lg">Resonance Check</span>
+      </div>
+    </div>
+
+    <section id="step1" class="glass-panel p-8 rounded-xl space-y-6 relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-9xl font-serif text-tctc-gold pointer-events-none">I</div>
+      
+      <div class="max-w-2xl">
+        <h2 class="text-3xl font-serif text-tctc-gold mb-2">Define the Target</h2>
+        <p class="text-gray-400 mb-6">Before we create, we must define who is listening. The Aether Engine will simulate this person.</p>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs uppercase tracking-widest text-tctc-gold mb-2">Who are they?</label>
+            <input id="avatar-role" type="text" class="w-full bg-black/40 border border-tctc-gold/30 rounded p-3 focus:border-tctc-gold outline-none" placeholder="e.g. Stressed Real Estate Agent with 2 kids">
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-widest text-tctc-gold mb-2">What keeps them up at night?</label>
+            <textarea id="avatar-pain" rows="3" class="w-full bg-black/40 border border-tctc-gold/30 rounded p-3 focus:border-tctc-gold outline-none" placeholder="e.g. Fear of market crash, leads drying up, no time for family..."></textarea>
+          </div>
+        </div>
+
+        <div class="mt-8 flex justify-end">
+          <button onclick="goToStep(2)" class="px-8 py-3 bg-tctc-gold text-black font-bold rounded hover:bg-yellow-500 transition shadow-lg">
+            Summon & Continue →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="step2" class="hidden glass-panel p-8 rounded-xl space-y-6 relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-9xl font-serif text-tctc-gold pointer-events-none">II</div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="space-y-4 border-r border-tctc-gold/20 pr-0 lg:pr-8">
+          <h2 class="text-3xl font-serif text-tctc-gold">The Raw Material</h2>
+          <p class="text-gray-400 text-sm">Input your topic, offer, or a rough braindump. The Engine will transmute this into gold.</p>
+          
+          <textarea id="content-input" rows="12" class="w-full bg-black/40 border border-tctc-gold/30 rounded p-4 focus:border-tctc-gold outline-none text-sm leading-relaxed" placeholder="Paste your raw thoughts, offer details, or a transcript here..."></textarea>
+          
+          <div class="flex gap-2">
+            <button onclick="generateContent('linkedin')" id="btn-gen-li" class="flex-1 py-3 border border-tctc-gold/50 rounded hover:bg-tctc-gold/10 transition text-xs uppercase tracking-wider">LinkedIn Authority</button>
+            <button onclick="generateContent('email')" id="btn-gen-email" class="flex-1 py-3 border border-tctc-gold/50 rounded hover:bg-tctc-gold/10 transition text-xs uppercase tracking-wider">Email Teaser</button>
+            <button onclick="generateContent('ad')" id="btn-gen-ad" class="flex-1 py-3 border border-tctc-gold/50 rounded hover:bg-tctc-gold/10 transition text-xs uppercase tracking-wider">Viral Ad Hook</button>
+          </div>
+        </div>
+
+        <div class="space-y-4 flex flex-col">
+          <h2 class="text-3xl font-serif text-tctc-gold">Transmuted Output</h2>
+          <div id="content-output-container" class="flex-1 bg-black/20 rounded border border-tctc-gold/10 p-6 relative min-h-[300px]">
+            <div id="content-placeholder" class="absolute inset-0 flex items-center justify-center text-gray-600 italic text-sm">
+              Select a format on the left to begin transmutation...
+            </div>
+            <textarea id="generated-content" class="hidden w-full h-full bg-transparent border-none outline-none text-gray-200 resize-none" readonly></textarea>
+          </div>
+          
+          <div class="flex justify-between items-center">
+             <span id="generation-status" class="text-xs text-tctc-gold animate-pulse hidden">⚗️ Transmuting...</span>
+             <button onclick="goToStep(3)" id="btn-test-resonance" class="opacity-50 cursor-not-allowed px-8 py-3 bg-tctc-gold text-black font-bold rounded hover:bg-yellow-500 transition shadow-lg" disabled>
+              Test Resonance →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="step3" class="hidden glass-panel p-8 rounded-xl space-y-6 relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-4 opacity-10 text-9xl font-serif text-tctc-gold pointer-events-none">III</div>
+      
+      <div class="text-center max-w-3xl mx-auto mb-8">
+        <h2 class="text-4xl font-serif text-tctc-gold mb-2">The Resonance Chamber</h2>
+        <p class="text-gray-400">We are now showing your generated content to your Avatar (<span id="avatar-name-display" class="text-white font-bold"></span>).</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="col-span-2 bg-black/30 border border-tctc-gold/30 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4 border-b border-tctc-gold/20 pb-4">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tctc-gold to-yellow-700 flex items-center justify-center font-bold text-black">AI</div>
+                <div>
+                    <div class="text-sm font-bold text-tctc-gold">Avatar Feedback</div>
+                    <div class="text-xs text-gray-500">Live Reaction</div>
+                </div>
+            </div>
+            <div id="feedback-container" class="prose prose-invert max-w-none text-sm">
+                <div class="flex items-center justify-center h-40">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-tctc-gold"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-b from-tctc-gold/10 to-black/50 border border-tctc-gold/30 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+            <h3 class="text-xs uppercase tracking-widest text-gray-500 mb-2">Resonance Score</h3>
+            <div id="resonance-score" class="text-6xl font-serif font-bold text-tctc-gold mb-2">--</div>
+            <p class="text-xs text-gray-400">/ 100</p>
+            
+            <button onclick="goToStep(1)" class="mt-8 text-xs text-tctc-gold underline hover:text-white">Start New Campaign</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/js/api-keys.js"></script>
+  <script src="app.js"></script>
+  <script src="/js/auth-guard.js" data-required-tool="any"></script>
+
+</body>
+</html>

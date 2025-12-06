@@ -43,7 +43,7 @@
         const userRef = db.collection('users').doc(user.uid);
         const doc = await userRef.get();
         
-        const allTools = ['diagnostic', 'blog-builder', 'offer-architect', 'sales-simulator'];
+        const allTools = ['diagnostic', 'blog-builder', 'offer-architect', 'sales-simulator', 'aether-engine'];
         
         if (!doc.exists) {
             // Create new user with full access
