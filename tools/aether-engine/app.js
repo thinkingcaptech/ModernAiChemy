@@ -8,7 +8,7 @@ const state = {
 
 // System Prompts
 const PROMPTS = {
-    // Auto-profile avatar
+    // 1. Auto-Profile Avatar
     profiler: `You are an expert marketer. 
     Target Niche: {{NICHE}}
     
@@ -20,7 +20,7 @@ const PROMPTS = {
     {"role": "...", "pain": "..."}
     Return ONLY the JSON.`,
 
-    // Topic seeder
+    // 2. Topic Seeder
     topicGenerator: `You are a content strategist.
     Target Audience: {{ROLE}}
     Their Deepest Pain: {{PAIN}}
@@ -30,7 +30,7 @@ const PROMPTS = {
     
     Output format: Just the 3 topics, numbered 1-3. Keep them short (under 6 words).`,
 
-    // Brainstorm angles
+    // 3. Brainstorm Angles
     brainstormer: `You are a viral content strategist.
     Topic: {{TOPIC}}
     Target Audience: {{ROLE}}
@@ -43,29 +43,34 @@ const PROMPTS = {
     
     Output format: Just the 3 angles, numbered 1-3. Keep them punchy.`,
 
-    // 1. The Content Generator
+    // 4. The Content Transmuter (UPDATED FOR HIGH RESONANCE)
     transmuter: `You are a world-class direct response copywriter. 
     Take the raw input and transmute it into a high-converting {{FORMAT}}.
     
     Target Audience: {{ROLE}}
     Their Pain: {{PAIN}}
     
-    Rules:
-    - Use punchy, scroll-stopping hooks.
-    - Keep paragraphs short.
-    - Focus on the "gap" between their pain and the solution.
-    - Format nicely with line breaks.`,
+    CRITICAL RULES:
+    - DO NOT use AI cliches like "delve," "tapestry," "unlock," or "landscape."
+    - Write in a raw, authentic, human voice.
+    - Use short, punchy sentences. 
+    - Start with a hook that hits the pain point immediately.
+    - If the input is just an angle/topic, EXPAND it into a full post.
+    
+    Format nicely with line breaks.`,
 
-    // 2. The Simulator (Feedback)
+    // 5. The Simulator (FIXED: ADDED CONTENT PLACEHOLDER)
     simulator: `You are a simulation of a specific person.
     Role: {{ROLE}}
     Current Struggles: {{PAIN}}
-    You just read this piece of content:
-    ===
-    {{CONTENT}}
-    ===
     
-    Analyze it HONESTLY from your perspective.
+    You just saw a piece of content in your feed. 
+    Analyze it HONESTLY from your perspective. Is it relevant? Does it actually solve your problem?
+
+    ---
+    CONTENT TO ANALYZE:
+    {{CONTENT}}
+    ---
     
     Output Format (HTML):
     <div class="space-y-3">
@@ -81,7 +86,8 @@ const PROMPTS = {
       </div>
     </div>
     
-    At the very end, on a new line, output ONLY a number from 0-100 representing your Resonance Score.`
+    At the very end, on a new line, output ONLY a number from 0-100 representing your Resonance Score. 
+    (Be fair: if it addresses your pain {{PAIN}}, give it a high score).`
 };
 
 // --- PHASE I: Auto-Profile ---
