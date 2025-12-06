@@ -1,3 +1,9 @@
+/**
+ * LEGACY PAYMENT SYSTEM
+ * Note: This project previously handled Stripe payments, webhooks, and tier management.
+ * While the app is now free (BYOK model), this code is preserved to demonstrate
+ * backend integration capabilities.
+ */
 const { onRequest } = require('firebase-functions/v2/https');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');

@@ -126,6 +126,16 @@ ModernAiChemy/
 
 ---
 
+## 🧱 Architecture
+
+- **Firebase-First Backend**: Hosting, Auth, Firestore, and Cloud Functions live in one Firebase project, giving a serverless deployment with built-in SSL, auth session management, and Firestore rules for per-user isolation.
+- **Vanilla JS Frontend**: Each tool is a standalone HTML/CSS/JS bundle served statically, so there is no build step or framework runtime—great for instant loads and transparent demo value.
+- **BYOK Security Model**: `js/api-keys.js` keeps all AI credentials inside `localStorage` and the browser fetches provider APIs directly, so no sensitive secrets are routed through Cloud Functions.
+- **Shared Auth Guard**: `js/auth-guard.js` bootstraps Firebase on every protected page, enforces login, and grants full tool access + `freeAccess` flagging in Firestore to stay aligned with the rules.
+- **Legacy Stripe Backend**: `functions/index.js` still exposes Stripe webhook + registration flows that prove experience with payments, but the rest of the app now treats every authenticated user as free tier.
+
+---
+
 ## 🔐 Security & Privacy
 
 ### Your API Keys Are Safe

@@ -2,9 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper function to check if user has paid
+    // Helper function to check if user has paid OR has been granted free access
     function hasPaid() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.hasLifetimeAccess == true;
+      let userData = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return userData.hasLifetimeAccess == true || userData.freeAccess == true;
     }
     
     // Helper function to check authentication
