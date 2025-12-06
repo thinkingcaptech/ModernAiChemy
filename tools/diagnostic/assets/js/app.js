@@ -100,7 +100,7 @@ const getApiKey = () => {
 };
 
 // Store results locally and navigate to results page
-const saveAndNavigateToResults = (reportData) => {
+const saveAndNavigateToResults = async (reportData) => {
     const reportId = 'report_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     const reportWithId = { ...reportData, reportId, createdAt: new Date().toISOString() };
     
@@ -109,6 +109,23 @@ const saveAndNavigateToResults = (reportData) => {
     
     // Store report ID in session for easy retrieval
     sessionStorage.setItem('latest_report_id', reportId);
+
+    // Attempt to store in Firestore for cross-device access
+    try {
+        if (typeof firebase !== 'undefined' && firebase.apps.length) {
+            const user = firebase.auth().currentUser;
+            if (user && window.db) {
+                await window.db
+                    .collection('users')
+                    .doc(user.uid)
+                    .collection('diagnostics')
+                    .doc(reportId)
+                    .set(reportWithId);
+            }
+        }
+    } catch (cloudError) {
+        console.warn('Could not sync diagnostic report to cloud:', cloudError);
+    }
     
     // Navigate to results
     window.location.href = `results.html?reportId=${encodeURIComponent(reportId)}`;
@@ -189,7 +206,7 @@ const initMultiStepForm = () => {
                 publicShare: true
             };
 
-            saveAndNavigateToResults(reportData);
+            await saveAndNavigateToResults(reportData);
 
         } catch (error) {
             console.error('Submission error', error);

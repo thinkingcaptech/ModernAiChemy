@@ -5,13 +5,12 @@
     }
 
     const defaultConfig = {
-        apiKey: 'AIzaSyDx-o8U2wJ8YrERvDrhruJnhehbvhofPwQ',
-        authDomain: 'businesshealthdiagnostictool.firebaseapp.com',
-        projectId: 'businesshealthdiagnostictool',
-        storageBucket: 'businesshealthdiagnostictool.firebasestorage.app',
-        messagingSenderId: '954152344797',
-        appId: '1:954152344797:web:f973e89816499a7dc04f34',
-        measurementId: 'G-5FGMGQHNXD',
+        apiKey: 'AIzaSyDpiRf-zSzrelcn8_M2dqdzyeMZUnvvPHk',
+        authDomain: 'modern-aichemy-dashboard-dec25.firebaseapp.com',
+        projectId: 'modern-aichemy-dashboard-dec25',
+        storageBucket: 'modern-aichemy-dashboard-dec25.firebasestorage.app',
+        messagingSenderId: '541181618242',
+        appId: '1:541181618242:web:9f6a557fa57e58c872a5db',
     };
 
     const config = window.firebaseConfig || defaultConfig;

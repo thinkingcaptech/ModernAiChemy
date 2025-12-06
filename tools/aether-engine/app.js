@@ -316,6 +316,22 @@ async function generateContent(format) {
         document.getElementById('btn-test-resonance').disabled = false;
         document.getElementById('btn-test-resonance').classList.remove('opacity-50', 'cursor-not-allowed');
         
+        if (typeof firebase !== 'undefined' && firebase.apps.length) {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const db = firebase.firestore();
+                await db.collection('users')
+                    .doc(user.uid)
+                    .collection('aether_content')
+                    .add({
+                        avatar: state.avatar,
+                        format,
+                        content: response,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+            }
+        }
+        
     } catch (error) {
         alert("Transmutation failed: " + error.message);
     } finally {
@@ -355,6 +371,23 @@ async function runResonanceCheck() {
             .replace('{{VERDICT}}', verdict);
 
         animateValue(scoreEl, 0, score, 1500);
+
+        if (typeof firebase !== 'undefined' && firebase.apps.length) {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const db = firebase.firestore();
+                await db.collection('users')
+                    .doc(user.uid)
+                    .collection('aether_content')
+                    .add({
+                        avatar: state.avatar,
+                        content: state.generatedContent,
+                        analysis: htmlContent,
+                        resonanceScore: score,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+            }
+        }
 
     } catch (error) {
         feedbackContainer.innerHTML = `<p class="text-red-500">Simulation Error: ${error.message}</p>`;

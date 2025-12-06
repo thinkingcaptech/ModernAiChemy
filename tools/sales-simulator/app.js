@@ -160,6 +160,24 @@ endCallBtn.addEventListener('click', async () => {
 
         analysisContent.innerHTML = analysisResponse;
 
+        if (typeof firebase !== "undefined" && firebase.apps.length) {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const db = firebase.firestore();
+                await db.collection('users')
+                    .doc(user.uid)
+                    .collection('sales_simulations')
+                    .add({
+                        persona: currentPersona,
+                        offer: currentOffer,
+                        transcript,
+                        analysis: analysisResponse,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                console.log("Simulation saved to history.");
+            }
+        }
+
     } catch (error) {
         analysisContent.innerHTML = `<p class="text-red-500">Analysis Failed: ${error.message}</p>`;
     }

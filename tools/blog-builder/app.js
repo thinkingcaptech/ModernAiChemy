@@ -1029,21 +1029,38 @@ async function handleGenerate() {
 
 // Save project to Firestore
 async function saveProject({ baseArticle, cities, tone, length, posts }) {
+  if (typeof firebase === "undefined" || !firebase.apps.length) {
+    console.warn("Firebase not available - skipping project save.");
+    return;
+  }
+
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    console.warn("Cannot save project: user not authenticated.");
+    return;
+  }
+
   try {
-    await fetch("/api/saveProject", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .collection("blog_projects")
+      .add({
         baseArticle,
         cities,
         tone,
         length,
         posts,
-        createdAt: new Date().toISOString()
-      })
-    });
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    console.log("Project saved to Firestore.");
   } catch (err) {
     console.error("Failed to save project:", err);
+    if (statusEl) {
+      statusEl.textContent = "Warning: generated posts saved locally but not synced to cloud.";
+      statusEl.style.color = "#f97316";
+    }
   }
 }
 
