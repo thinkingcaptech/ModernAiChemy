@@ -20,10 +20,21 @@ const PROMPTS = {
     {"role": "...", "pain": "..."}
     Return ONLY the JSON.`,
 
+    // Topic seeder
+    topicGenerator: `You are a content strategist.
+    Target Audience: {{ROLE}}
+    Their Deepest Pain: {{PAIN}}
+    
+    Generate 3 specific, high-value content topics that would resonate deeply with this person right now.
+    Focus on solving their specific pain.
+    
+    Output format: Just the 3 topics, numbered 1-3. Keep them short (under 6 words).`,
+
     // Brainstorm angles
     brainstormer: `You are a viral content strategist.
     Topic: {{TOPIC}}
     Target Audience: {{ROLE}}
+    Their Pain: {{PAIN}}
     
     Task: Generate 3 distinct, high-converting angles/hooks for this topic.
     1. Contrarian/Polarizing Angle
@@ -49,8 +60,11 @@ const PROMPTS = {
     simulator: `You are a simulation of a specific person.
     Role: {{ROLE}}
     Current Struggles: {{PAIN}}
+    You just read this piece of content:
+    ===
+    {{CONTENT}}
+    ===
     
-    You just saw a piece of content in your feed. 
     Analyze it HONESTLY from your perspective.
     
     Output Format (HTML):
@@ -103,6 +117,49 @@ async function autoGenerateAvatar() {
     }
 }
 
+// --- PHASE II: Topic Suggestions ---
+async function suggestTopics() {
+    const suggestionsDiv = document.getElementById('topic-suggestions');
+    if (!suggestionsDiv) return;
+
+    suggestionsDiv.innerHTML = '<div class="text-xs text-gray-500 animate-pulse">Consulting the Ether for topics...</div>';
+
+    if (!ModernAlchemyKeys.requireAnyKey()) {
+        suggestionsDiv.innerHTML = '<div class="text-xs text-red-400">API key required for suggestions.</div>';
+        return;
+    }
+
+    try {
+        const prompt = PROMPTS.topicGenerator
+            .replace('{{ROLE}}', state.avatar.role)
+            .replace('{{PAIN}}', state.avatar.pain);
+
+        const response = await ModernAlchemyKeys.callAI(prompt);
+        suggestionsDiv.innerHTML = '';
+
+        const lines = response.split('\n').filter(l => l.trim().length > 2);
+        if (lines.length === 0) {
+            suggestionsDiv.innerHTML = '<div class="text-xs text-gray-500">No suggestions returned.</div>';
+            return;
+        }
+
+        lines.forEach(line => {
+            const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/"/g, '').trim();
+            if (!cleanLine) return;
+            const chip = document.createElement('button');
+            chip.className = "px-3 py-1 bg-tctc-gold/10 border border-tctc-gold/30 rounded-full text-xs text-tctc-gold hover:bg-tctc-gold hover:text-black transition mb-2 mr-2";
+            chip.innerText = `+ ${cleanLine}`;
+            chip.onclick = () => {
+                document.getElementById('topic-input').value = cleanLine;
+            };
+            suggestionsDiv.appendChild(chip);
+        });
+    } catch (e) {
+        console.error('Topic suggestion error:', e);
+        suggestionsDiv.innerHTML = '<div class="text-xs text-red-500">Unable to fetch topics.</div>';
+    }
+}
+
 // --- PHASE II: Brainstorm Angles ---
 async function brainstormAngles() {
     const topic = document.getElementById('topic-input').value.trim();
@@ -122,7 +179,8 @@ async function brainstormAngles() {
     try {
         const prompt = PROMPTS.brainstormer
             .replace('{{TOPIC}}', topic)
-            .replace('{{ROLE}}', state.avatar.role);
+            .replace('{{ROLE}}', state.avatar.role)
+            .replace('{{PAIN}}', state.avatar.pain);
             
         const response = await ModernAlchemyKeys.callAI(prompt);
         
@@ -133,10 +191,10 @@ async function brainstormAngles() {
             const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/"/g, '').trim();
             if (!cleanLine) return;
             const ideaBtn = document.createElement('button');
-            ideaBtn.className = "w-full text-left p-2 text-xs text-gray-300 border border-gray-700 hover:border-tctc-gold hover:text-tctc-gold rounded transition bg-black/40";
-            ideaBtn.innerText = cleanLine;
+            ideaBtn.className = "w-full text-left p-3 text-xs text-gray-300 border border-gray-700 hover:border-tctc-gold hover:text-tctc-gold rounded transition bg-black/40 group";
+            ideaBtn.innerHTML = `<span class="text-tctc-gold font-bold mr-2">→</span> ${cleanLine}`;
             ideaBtn.onclick = () => {
-                document.getElementById('content-input').value = `TOPIC: ${topic}\nANGLE: ${cleanLine}\n\n[Expand on this idea...]`;
+                document.getElementById('content-input').value = `TOPIC: ${topic}\nTARGET: ${state.avatar.role}\nPAIN: ${state.avatar.pain}\nANGLE: ${cleanLine}\n\n[Expand on this idea...]`;
             };
             resultsDiv.appendChild(ideaBtn);
         });
@@ -175,8 +233,7 @@ function extractAvatarProfile(raw) {
 }
 
 // Navigation
-function goToStep(step) {
-    // Validation
+async function goToStep(step) {
     if (step === 2) {
         const role = document.getElementById('avatar-role').value.trim();
         const pain = document.getElementById('avatar-pain').value.trim();
@@ -185,6 +242,7 @@ function goToStep(step) {
             return;
         }
         state.avatar = { role, pain };
+        await suggestTopics();
     }
     
     if (step === 3) {
@@ -196,11 +254,9 @@ function goToStep(step) {
         runResonanceCheck();
     }
 
-    // UI Switching
     document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
     document.getElementById(`step${step}`).classList.remove('hidden');
     
-    // Stepper UI
     for (let i = 1; i <= 3; i++) {
         const el = document.getElementById(`step${i}-indicator`);
         if (i === step) {
