@@ -43,7 +43,7 @@
         const userRef = db.collection('users').doc(user.uid);
         const doc = await userRef.get();
         
-        const allTools = ['diagnostic', 'blog-builder', 'offer-architect'];
+        const allTools = ['diagnostic', 'blog-builder', 'offer-architect', 'sales-simulator'];
         
         if (!doc.exists) {
             // Create new user with full access
@@ -58,8 +58,10 @@
             return { tools: allTools, tier: 'free', freeAccess: true };
         } else {
             const data = doc.data();
+            const userTools = data.tools || [];
+            const missingTools = allTools.filter(tool => !userTools.includes(tool));
             // Ensure existing users have all tools
-            if (!data.tools || data.tools.length < 3 || !data.freeAccess) {
+            if (missingTools.length > 0 || !data.freeAccess) {
                 await userRef.update({
                     tools: allTools,
                     freeAccess: true,
@@ -100,7 +102,7 @@
                 try {
                     // Ensure user has full access (FREE model)
                     const userData = await ensureFullAccess(db, user);
-                    const userTools = userData.tools || ['diagnostic', 'blog-builder', 'offer-architect'];
+                    const userTools = userData.tools || allTools;
 
                     console.log('User authenticated with FREE access to all tools');
 
@@ -127,7 +129,7 @@
                     window.alchemyUser = {
                         uid: user.uid,
                         email: user.email,
-                        tools: ['diagnostic', 'blog-builder', 'offer-architect'],
+                        tools: allTools,
                         tier: 'free',
                         freeAccess: true
                     };

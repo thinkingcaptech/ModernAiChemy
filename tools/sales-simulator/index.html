@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Simulator | Modern Alchemy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            tctc: {
+              primary: '#1a0a0f',
+              secondary: '#2b0f12',
+              textMain: '#f4e0a9',
+              textSub: '#C0C0C0',
+              accent: '#D4AF37',
+              gold: '#D4AF37',
+            }
+          },
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'serif'],
+            sans: ['Lato', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background-color: #1a0a0f; color: #f4e0a9; font-family: 'Lato', sans-serif; }
+    .glass-panel {
+      background: rgba(43, 15, 18, 0.9);
+      border: 1px solid #D4AF37;
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
+    }
+    /* Chat Bubble Styles */
+    .bubble-user {
+      background: linear-gradient(135deg, #D4AF37 0%, #B59025 100%);
+      color: #1a0a0f;
+      border-radius: 18px 18px 0 18px;
+    }
+    .bubble-ai {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #f4e0a9;
+      border-radius: 18px 18px 18px 0;
+    }
+    .typing-dot {
+      animation: typing 1.4s infinite ease-in-out both;
+    }
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+  <header class="border-b border-tctc-gold/30 bg-tctc-secondary/80 backdrop-blur-md p-4 flex justify-between items-center z-10">
+    <div class="flex items-center gap-3">
+      <a href="/dashboard.html" class="text-2xl font-serif font-bold text-tctc-gold hover:opacity-80 transition">
+        ← Modern Alchemy
+      </a>
+      <span class="text-tctc-textSub text-sm hidden md:inline">| Sales Simulator</span>
+    </div>
+    <button id="endCallBtn" class="hidden px-4 py-2 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition text-sm font-bold uppercase tracking-wider">
+      End Simulation & Analyze
+    </button>
+  </header>
+
+  <main class="flex-1 relative flex flex-col items-center justify-center p-4">
+    
+    <div id="setupPanel" class="glass-panel p-8 rounded-2xl max-w-2xl w-full space-y-6 relative z-20">
+      <div class="text-center space-y-2">
+        <h1 class="text-4xl font-serif font-bold text-tctc-gold">The Dojo</h1>
+        <p class="text-tctc-textSub">Configure your sparring partner. Practice the <span class="text-tctc-gold">Ignis, Aqua, Terra</span> protocol.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label class="text-xs uppercase tracking-widest text-tctc-gold font-bold">Prospect Persona</label>
+          <select id="persona" class="w-full bg-black/40 border border-tctc-gold/30 rounded-lg p-3 text-tctc-textMain focus:border-tctc-gold outline-none">
+            <option value="skeptic">The Skeptic (Hard)</option>
+            <option value="busy">The Busy Executive (Fast Paced)</option>
+            <option value="friendly">The Friendly browser (Low Intent)</option>
+            <option value="budget">The Price Shopper (Budget Focused)</option>
+          </select>
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs uppercase tracking-widest text-tctc-gold font-bold">What are you selling?</label>
+          <input type="text" id="offer" placeholder="e.g. High Ticket Coaching ($5k)" 
+            class="w-full bg-black/40 border border-tctc-gold/30 rounded-lg p-3 text-tctc-textMain focus:border-tctc-gold outline-none">
+        </div>
+      </div>
+
+      <button onclick="startSimulation()" class="w-full py-4 bg-gradient-to-r from-tctc-gold to-yellow-600 text-black font-bold text-lg rounded-lg shadow-lg hover:scale-[1.02] transition-transform">
+        Enter the Simulation
+      </button>
+    </div>
+
+    <div id="chatInterface" class="hidden flex-col w-full max-w-4xl h-full max-h-[800px] relative z-10">
+      
+      <div id="chatHistory" class="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth pb-24">
+        <div class="flex justify-start">
+          <div class="bubble-ai p-4 max-w-[80%]">
+            <p class="leading-relaxed">Hello? I only have a few minutes, what is this regarding?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-tctc-secondary/90 border-t border-tctc-gold/20 backdrop-blur-lg">
+        <div class="relative max-w-4xl mx-auto flex gap-2">
+          <input type="text" id="userMessage" 
+            class="flex-1 bg-black/50 border border-tctc-gold/30 rounded-full px-6 py-4 text-white focus:border-tctc-gold focus:ring-1 focus:ring-tctc-gold outline-none"
+            placeholder="Type your response..."
+            onkeypress="if(event.key === 'Enter') sendMessage()">
+          
+          <button onclick="sendMessage()" class="bg-tctc-gold hover:bg-yellow-500 text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-transform hover:scale-105">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="analysisPanel" class="hidden absolute inset-0 bg-tctc-primary/95 backdrop-blur-xl z-50 p-8 overflow-y-auto">
+      <div class="max-w-3xl mx-auto space-y-8">
+        <div class="text-center">
+          <h2 class="text-4xl font-serif font-bold text-tctc-gold mb-2">Alchemy Analysis</h2>
+          <p class="text-tctc-textSub">Here is how you performed against the protocol.</p>
+        </div>
+
+        <div id="analysisContent" class="glass-panel p-8 rounded-xl prose prose-invert max-w-none">
+          <div class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-tctc-gold"></div>
+          </div>
+        </div>
+
+        <button onclick="location.reload()" class="block mx-auto px-8 py-3 border border-tctc-gold text-tctc-gold rounded-lg hover:bg-tctc-gold hover:text-black transition">
+          Start New Simulation
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/api-keys.js"></script>
+  <script src="app.js"></script>
+  <script src="/js/auth-guard.js" data-required-tool="any"></script>
+
+</body>
+</html>

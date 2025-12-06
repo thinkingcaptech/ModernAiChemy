@@ -3,543 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Alchemy | Business in a Box</title>
+    <title>Modern Alchemy | Free AI Business Suite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Dark Mode (Default) */
-            --bg-primary: #1a0a0a;
-            --bg-secondary: #0f0606;
-            --text-primary: #F0F0F0;
-            --text-secondary: #C0C0C0;
-            --text-accent: #D4AF37;
-            --border-color: #3D1111;
-            --gold: #110f0a;
-            --gold-light: #F4CF57;
-            --shadow-gold: rgba(212, 175, 55, 0.4);
+            --bg: #130507;
+            --bg-alt: #1e0b0e;
+            --card: rgba(38, 14, 18, 0.95);
+            --gold: #d4af37;
+            --gold-soft: #e2c46a;
+            --text-main: #f8eee0;
+            --text-sub: #c3b3a1;
+            --border: rgba(212, 175, 55, 0.35);
         }
 
-        /* Light Mode - High Contrast Parchment on Eggshell */
-        body[data-theme="light"] {
-            --bg-primary: #FAF8F3;          /* Eggshell white background */
-            --bg-secondary: #F5F0E1;        /* Slightly warmer eggshell */
-            --bg-card: #F4ECD8;             /* Parchment for cards */
-            --text-primary: #1A0A05;        /* Near black for high contrast */
-            --text-secondary: #3D2817;      /* Dark brown */
-            --text-accent: #8B5A00;         /* Dark amber gold */
-            --border-color: #8B6914;        /* Solid gold border */
-            --gold: #8B5A00;
-            --gold-light: #D4AF37;
-            --shadow-gold: rgba(139, 90, 0, 0.25);
-        }
-
-        /* Light mode card styling */
-        body[data-theme="light"] .tool-card {
-            background: linear-gradient(145deg, #F4ECD8 0%, #EDE4CC 100%);
-            border: 2px solid #8B6914;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 0 30px rgba(139, 105, 20, 0.08);
-        }
-
-        body[data-theme="light"] .tool-card:hover {
-            border-color: #D4AF37;
-            box-shadow: 0 8px 30px rgba(139, 90, 0, 0.2);
-        }
-
-        /* Theme Toggle Button */
-        .theme-toggle {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--text-accent), #8B6914);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px var(--shadow-gold);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px var(--shadow-gold);
-        }
-        .theme-toggle:active {
-            transform: scale(0.95);
-        }
-
-        /* Light mode overrides for shimmer text */
-        body[data-theme="light"] .shimmer-text {
-            background: linear-gradient(
-                to right,
-                #5C3D00 20%,
-                #1A0A05 50%, 
-                #5C3D00 80%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-
-        /* Light mode section backgrounds */
-        body[data-theme="light"] .tools-section {
-            background: var(--bg-secondary);
-        }
-
-        body[data-theme="light"] header {
-            background: linear-gradient(145deg, #F4ECD8 0%, #EDE4CC 100%);
-            border-bottom-color: #8B6914;
-        }
-
-        body[data-theme="light"] footer {
-            background: linear-gradient(145deg, #F4ECD8 0%, #EDE4CC 100%);
-            border-top: 1px solid #8B6914;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Lato', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: radial-gradient(circle at top, rgba(212, 175, 55, 0.15), transparent 60%), var(--bg);
+            color: var(--text-main);
             min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
         }
 
-        /* Text Shimmer Animation */
-        @keyframes textShimmer {
-            0%   { background-position: -200% center; }
-            50%  { background-position: 200% center; }
-            100% { background-position: -200% center; }
-        }
-
-        .shimmer-text {
-            background: linear-gradient(
-                to right,
-                var(--text-accent) 20%,
-                #FFFFFF 50%, 
-                var(--text-accent) 80%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShimmer 5s ease-in-out infinite;
-        }
-
-        /* Container */
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
-        /* Header */
         header {
-            padding: 30px 0;
-            border-bottom: 1px solid var(--border-color);
+            padding: 28px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--gold); font-size: 22px; font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+        nav { display: flex; gap: 18px; align-items: center; }
+        nav a { color: var(--text-sub); text-decoration: none; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; }
+        nav a:hover { color: var(--gold); }
+        .cta-btn { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: #160b06; padding: 10px 22px; border-radius: 999px; font-weight: 700; border: none; text-decoration: none; }
 
-        .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .hero { text-align: center; padding: 90px 0 70px; }
+        .hero p.eyebrow { text-transform: uppercase; letter-spacing: 0.4em; font-size: 12px; color: var(--gold); margin-bottom: 24px; }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 54px; line-height: 1.15; margin-bottom: 24px; }
+        .hero p.subtext { max-width: 720px; margin: 0 auto 35px; font-size: 18px; color: var(--text-sub); line-height: 1.7; }
+        .hero-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+        .hero-actions a:nth-child(2) { border: 1px solid var(--gold); background: transparent; color: var(--text-main); }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-        }
+        .tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin: 30px 0 80px; }
+        .tile { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
+        .tile::after { content: ""; position: absolute; inset: 0; border-radius: 18px; border: 1px solid transparent; background: linear-gradient(135deg, rgba(212,175,55,0.25), transparent); opacity: 0; transition: opacity 0.3s; }
+        .tile:hover::after { opacity: 1; }
+        .tile h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; margin-bottom: 10px; color: var(--gold); }
+        .tile p { color: var(--text-sub); line-height: 1.6; font-size: 15px; }
 
-        .logo-icon {
-            font-size: 48px;
-        }
+        .byok { background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 18px; padding: 40px; margin-bottom: 80px; text-align: center; }
+        .byok h2 { font-family: 'Cormorant Garamond', serif; color: var(--gold); margin-bottom: 16px; font-size: 32px; }
+        .byok p { color: var(--text-sub); margin-bottom: 20px; line-height: 1.7; }
 
-        .logo-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-accent);
-        }
+        .about { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; padding-bottom: 80px; }
+        .about-card { border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 18px; padding: 30px; background: rgba(15, 6, 6, 0.8); }
+        .about-card h3 { font-family: 'Cormorant Garamond', serif; color: var(--gold); margin-bottom: 12px; font-size: 26px; }
+        .about-card p { color: var(--text-sub); line-height: 1.7; }
 
-        .header-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
+        footer { text-align: center; padding: 40px 0 60px; color: var(--text-sub); font-size: 14px; border-top: 1px solid rgba(212, 175, 55, 0.15); }
 
-        .header-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        .header-links a:hover {
-            color: var(--text-accent);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 80px 0 60px;
-            text-align: center;
-        }
-
-        .eyebrow {
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-size: 12px;
-            color: var(--text-accent);
-            margin-bottom: 20px;
-        }
-
-        .hero h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 56px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            color: var(--text-secondary);
-            font-size: 18px;
-            max-width: 700px;
-            margin: 0 auto 40px;
-            line-height: 1.7;
-        }
-
-        /* Tools Grid */
-        .tools-section {
-            padding: 40px 0 80px;
-        }
-
-        .section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 32px;
-            text-align: center;
-            margin-bottom: 50px;
-            color: var(--text-accent);
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 30px;
-        }
-
-        .tool-card {
-            background: rgba(15, 6, 6, 0.8);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px 30px;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tool-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--text-accent), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--text-accent);
-            box-shadow: 
-                0 20px 60px rgba(212, 175, 55, 0.15),
-                inset 0 0 30px rgba(212, 175, 55, 0.05);
-        }
-
-        .tool-card:hover::before {
-            opacity: 1;
-        }
-
-        .tool-icon {
-            font-size: 72px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .tool-card h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-accent);
-            margin-bottom: 15px;
-        }
-
-        .tool-card p {
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .tool-card .btn-enter {
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-            color: var(--bg-primary);
-            border: none;
-            padding: 14px 40px;
-            border-radius: 8px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
-        }
-
-        .tool-card:hover .btn-enter {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
-        }
-
-        /* Settings Card - Special Styling */
-        .settings-card {
-            border-color: var(--text-accent);
-            background: rgba(212, 175, 55, 0.05);
-        }
-
-        .settings-card .tool-icon {
-            font-size: 64px;
-        }
-
-        /* Info Box */
-        .info-box {
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 50px;
-        }
-
-        .info-box h3 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--text-accent);
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        .info-box p {
-            color: var(--text-secondary);
-            font-size: 15px;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .tools-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tool-card {
-                padding: 30px 20px;
-            }
-
-            .tool-icon {
-                font-size: 56px;
-            }
-
-            .header-inner {
-                flex-direction: column;
-                gap: 20px;
-            }
-        }
+        .theme-toggle { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; border-radius: 999px; border: none; font-size: 20px; background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: #1b0c06; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.45); }
+        body.light { --bg: #faf6ee; --bg-alt: #f4ecd9; --card: #fffaf0; --text-main: #1c0b06; --text-sub: #4a3a2f; --border: rgba(212, 175, 55, 0.4); }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
-        <div class="container">
-            <div class="header-inner">
-                <a href="/" class="logo">
-                    <span class="logo-icon">⚗️</span>
-                    <span class="logo-text">Modern Alchemy</span>
-                </a>
-                <div class="header-links">
-                    <a href="/dashboard.html">Dashboard</a>
-                    <a href="/settings.html">Settings</a>
-                </div>
-            </div>
+        <div class="container header-inner">
+            <a href="/" class="logo">⚗️ Modern Alchemy</a>
+            <nav>
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/login.html">Login</a>
+                <a href="/settings.html">Settings</a>
+                <a class="cta-btn" href="/dashboard.html">Launch App</a>
+            </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <p class="eyebrow">Digital Alchemy Labs • 100% Free • BYOK</p>
-            <h1 class="shimmer-text">Your Complete Business Operating System</h1>
-            <p>Three powerful AI-driven tools to diagnose, build, and scale your business. Completely free - just bring your own API keys for complete privacy and control.</p>
-        </div>
-    </section>
-
-    <!-- Info Box -->
-    <div class="container">
-        <div class="info-box">
-            <h3>🔑 Bring Your Own Keys (BYOK) - Pay Only For What You Use</h3>
-            <p>Add your Gemini, OpenAI, Anthropic, or Grok API keys in Settings. Your keys stay private, you control costs directly with the AI providers.</p>
-        </div>
-    </div>
-
-    <!-- Tools Grid -->
-    <section class="tools-section">
-        <div class="container">
-            <h2 class="section-title shimmer-text">Choose Your Tool</h2>
-            
-            <div class="tools-grid">
-                <!-- Business Diagnostic -->
-                <a href="/tools/diagnostic/" class="tool-card">
-                    <span class="tool-icon">🏥</span>
-                    <h3>Business Diagnostic</h3>
-                    <p>Evaluate four core pillars of your business. Get AI-powered recommendations that point directly toward your next best move.</p>
-                    <button class="btn-enter">Start Diagnostic</button>
-                </a>
-
-                <!-- Blog Builder -->
-                <a href="/tools/blog-builder/" class="tool-card">
-                    <span class="tool-icon">📝</span>
-                    <h3>Blog Builder</h3>
-                    <p>Generate 1-200 localized blog posts from industry templates. Perfect for local SEO and content marketing at scale.</p>
-                    <button class="btn-enter">Generate Posts</button>
-                </a>
-
-                <!-- Offer Architect -->
-                <a href="/tools/offer-architect/" class="tool-card">
-                    <span class="tool-icon">⚗️</span>
-                    <h3>Offer Architect</h3>
-                    <p>Construct the structural DNA of your offer, delivery, and influence. Turn raw ideas into irresistible offers.</p>
-                    <button class="btn-enter">Build Offers</button>
-                </a>
-
-                <!-- Settings -->
-                <a href="/settings.html" class="tool-card settings-card">
-                    <span class="tool-icon">🔑</span>
-                    <h3>Settings & API Keys</h3>
-                    <p>Configure your AI providers: Gemini, OpenAI, Anthropic, and Grok. Your keys are stored locally for complete privacy.</p>
-                    <button class="btn-enter">Configure Keys</button>
-                </a>
+            <h1>Build, Diagnose, and Sell like an Alchemist.</h1>
+            <p class="subtext">Modern Alchemy is a production-grade micro-SaaS turned public portfolio. Sign up free, plug in your own AI keys, and show clients what you can do across diagnostics, content, offers, and live sales simulations.</p>
+            <div class="hero-actions">
+                <a class="cta-btn" href="/login.html">Create Free Account</a>
+                <a class="cta-btn" href="/dashboard.html" style="background: transparent; border: 1px solid var(--gold); color: var(--text-main);">Preview Dashboard</a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <div class="container">
+        <div class="tile-grid">
+            <div class="tile">
+                <h3>Business Diagnostic</h3>
+                <p>Map your entire operation across management, marketing, sales, and finance. The report is perfect for onboarding or value-first audits.</p>
+            </div>
+            <div class="tile">
+                <h3>Blog Builder</h3>
+                <p>Batch-generate up to 200 SEO-ready posts at a time. Local keywords, outlines, and exports without touching a backend.</p>
+            </div>
+            <div class="tile">
+                <h3>Offer Architect</h3>
+                <p>Turn any idea into a full offer: positioning, pricing ladders, funnel copy, and onboarding steps in one pass.</p>
+            </div>
+            <div class="tile">
+                <h3>Sales Simulator</h3>
+                <p>A flight simulator for sales calls. Spar against AI personas and get scored on Ignis (authority), Aqua (empathy), and Terra (close).</p>
+            </div>
+        </div>
+
+        <div class="byok">
+            <h2>BYOK Security + Portfolio Credibility</h2>
+            <p>Your API keys stay in the browser. Firebase handles auth/storage, but all AI calls run client-side via <code>js/api-keys.js</code>. Recruiters see Stripe webhooks, Firestore rules, and BYOK architecture in one repo.</p>
+            <a class="cta-btn" href="https://github.com/thinkingcaptech/ModernAiChemy" target="_blank" rel="noopener">View Source on GitHub</a>
+        </div>
+
+        <div class="about">
+            <div class="about-card">
+                <h3>About the Builder</h3>
+                <p>Hey, I’m Will—founder of Digital Alchemy Labs. I built the paid version of this Micro-SaaS to run Stripe, onboarding, and gated tools. Now it’s free so you can evaluate the craft, not the paywall.</p>
+            </div>
+            <div class="about-card">
+                <h3>How to Use It</h3>
+                <p>Create a free Firebase Auth account, drop in any AI key (Gemini, OpenAI, Claude, Grok), and run the tools from your dashboard. Every feature is unlocked—no upsells, no throttling.</p>
+            </div>
+            <div class="about-card">
+                <h3>Share the Story</h3>
+                <p>Launching on Reddit/LinkedIn? Frame it as an open-source BYOK suite plus sales simulator. It proves you can ship trusted UX, security, and serverless architecture end-to-end.</p>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
-            <p>&copy; 2025 Modern Alchemy by Digital Alchemy Labs. All rights reserved.</p>
+            &copy; 2025 Modern Alchemy • Built with Firebase, Vanilla JS, and BYOK.
         </div>
     </footer>
 
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">🌙</button>
-
-    <!-- Auth Guard - requires any tool access -->
-    <script src="/js/auth-guard.js" data-required-tool="any"></script>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
 
     <script>
-        // Theme Toggle Logic
-        (function() {
-            const toggle = document.getElementById('themeToggle');
-            const body = document.body;
-            
-            // Check for saved theme preference
-            const savedTheme = localStorage.getItem('alchemy-theme') || 'dark';
-            
-            // Apply saved theme
-            if (savedTheme === 'light') {
-                body.setAttribute('data-theme', 'light');
-                toggle.textContent = '☀️';
-            } else {
-                body.removeAttribute('data-theme');
-                toggle.textContent = '🌙';
-            }
-            
-            // Toggle functionality
-            toggle.addEventListener('click', () => {
-                const isLight = body.getAttribute('data-theme') === 'light';
-                if (isLight) {
-                    body.removeAttribute('data-theme');
-                    localStorage.setItem('alchemy-theme', 'dark');
-                    toggle.textContent = '🌙';
-                } else {
-                    body.setAttribute('data-theme', 'light');
-                    localStorage.setItem('alchemy-theme', 'light');
-                    toggle.textContent = '☀️';
-                }
-            });
-        })();
-
-        // Show/hide tools based on user access
-        window.addEventListener('alchemyAuthReady', (event) => {
-            const user = event.detail;
-            
-            // All tools are FREE - no need to check access
-            console.log('User authenticated:', user.email);
-            console.log('All tools unlocked (FREE access)');
-
-            // Update header with user info and logout
-            const headerLinks = document.querySelector('.header-links');
-            if (headerLinks && user.email) {
-                // Add user email display
-                const userInfo = document.createElement('span');
-                userInfo.textContent = user.email;
-                userInfo.style.color = '#C0C0C0';
-                userInfo.style.fontSize = '13px';
-                headerLinks.appendChild(userInfo);
-
-                // Add logout link
-                const logoutLink = document.createElement('a');
-                logoutLink.href = '#';
-                logoutLink.textContent = 'Logout';
-                logoutLink.style.color = '#D4AF37';
-                logoutLink.onclick = async (e) => {
-                    e.preventDefault();
-                    await firebase.auth().signOut();
-                    window.location.href = '/login.html';
-                };
-                headerLinks.appendChild(logoutLink);
-            }
+        const toggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const savedTheme = localStorage.getItem('alchemy-landing-theme');
+        if (savedTheme === 'light') body.classList.add('light');
+        toggle.textContent = body.classList.contains('light') ? '☀️' : '🌙';
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('light');
+            toggle.textContent = body.classList.contains('light') ? '☀️' : '🌙';
+            localStorage.setItem('alchemy-landing-theme', body.classList.contains('light') ? 'light' : 'dark');
         });
     </script>
 </body>

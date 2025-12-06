@@ -466,6 +466,7 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const defaultTools = ['diagnostic', 'blog-builder', 'offer-architect', 'sales-simulator'];
 
         // DOM Elements
         const loginForm = document.getElementById('loginForm');
@@ -533,15 +534,17 @@
                     displayName: user.displayName || '',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     tier: 'free',
-                    tools: ['diagnostic', 'blog-builder', 'offer-architect'], // ALL TOOLS FREE
+                    tools: defaultTools, // ALL TOOLS FREE
                     freeAccess: true
                 });
             } else {
                 // Existing user - ensure they have all tools
                 const data = doc.data();
-                if (!data.tools || data.tools.length < 3) {
+                const userTools = data.tools || [];
+                const missingTools = defaultTools.filter(tool => !userTools.includes(tool));
+                if (missingTools.length > 0 || !data.freeAccess) {
                     await userRef.update({
-                        tools: ['diagnostic', 'blog-builder', 'offer-architect'],
+                        tools: defaultTools,
                         freeAccess: true,
                         tier: 'free'
                     });

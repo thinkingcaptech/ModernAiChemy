@@ -2,7 +2,7 @@
   "indexes": [
     {
       "collectionGroup": "leads",
-      "queryScope": "Collection",
+      "queryScope": "COLLECTION",
       "fields": [
         {
           "fieldPath": "userId",
@@ -20,7 +20,7 @@
     },
     {
       "collectionGroup": "courses",
-      "queryScope": "Collection",
+      "queryScope": "COLLECTION",
       "fields": [
         {
           "fieldPath": "userId",
@@ -34,7 +34,7 @@
     },
     {
       "collectionGroup": "blogs",
-      "queryScope": "Collection",
+      "queryScope": "COLLECTION",
       "fields": [
         {
           "fieldPath": "userId",
@@ -48,7 +48,7 @@
     },
     {
       "collectionGroup": "diagnostics",
-      "queryScope": "Collection",
+      "queryScope": "COLLECTION",
       "fields": [
         {
           "fieldPath": "userId",
@@ -62,7 +62,7 @@
     },
     {
       "collectionGroup": "offers",
-      "queryScope": "Collection",
+      "queryScope": "COLLECTION",
       "fields": [
         {
           "fieldPath": "userId",

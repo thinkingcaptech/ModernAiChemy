@@ -1,9 +1,10 @@
-const CACHE_NAME = 'modern-alchemy-v1';
+const CACHE_NAME = 'modern-alchemy-v2';
 const urlsToCache = [
   '/',
   '/login.html',
   '/dashboard.html',
   '/settings.html',
+  '/tools/sales-simulator/index.html',
   '/logo.jpg',
   '/manifest.json',
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;600;700&display=swap'
