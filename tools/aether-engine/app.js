@@ -341,10 +341,11 @@ async function runResonanceCheck() {
     try {
         const rawResponse = await ModernAlchemyKeys.callAI(prompt);
         
-        const match = rawResponse.match(/(\d{1,3})\s*$/);
-        const score = match ? parseInt(match[1]) : 0;
+        const sanitized = rawResponse.trim().replace(/`+$/g, '').trim();
+        const match = sanitized.match(/(\d{1,3})\s*$/);
+        const score = match ? parseInt(match[1], 10) : 0;
         
-        const htmlContent = rawResponse.replace(/\d{1,3}\s*$/, '');
+        const htmlContent = match ? sanitized.replace(/(\d{1,3})\s*$/, '') : sanitized;
 
         const color = score > 70 ? 'text-green-400' : score > 40 ? 'text-yellow-400' : 'text-red-400';
         const verdict = score > 70 ? 'Would Click' : score > 40 ? 'Might Scroll Past' : 'Ignored';
