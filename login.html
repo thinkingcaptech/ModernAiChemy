@@ -361,7 +361,7 @@
         </div>
 
         <div style="margin-bottom:20px;padding:14px;border:1px dashed rgba(212,175,55,0.5);border-radius:12px;background:rgba(212,175,55,0.08);color:#f4e0a9;font-size:14px;line-height:1.5;">
-            <strong style="color:#d4af37;">Demo-Only Login:</strong> This gate is purely for showcasing the app. Click the button below and we’ll auto-generate a disposable account for you (no email required). Prefer to make your own? Use any placeholder email ending in <code>.com</code> and a password you create. No marketing emails, no storage of personal data—this simply unlocks the tools.
+            <strong style="color:#d4af37;">Demo-Only Login:</strong> This gate is purely for showcasing the app. Click the button below to auto-fill <code>demo@alchemy.com</code> / <code>Demo123!</code> or create your own placeholder email ending in <code>.com</code>. No marketing emails, no storage of personal data—this simply unlocks the tools.
             <button type="button" id="demoLoginBtn" onclick="loginDemoAccount()" style="margin-top:12px;width:100%;padding:10px 16px;border:1px solid rgba(212,175,55,0.5);border-radius:8px;background:rgba(212,175,55,0.15);color:#f4e0a9;font-weight:600;cursor:pointer;">Launch Demo Account</button>
         </div>
 
@@ -472,33 +472,10 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         const defaultTools = ['diagnostic', 'blog-builder', 'offer-architect', 'sales-simulator', 'aether-engine'];
-        const DEMO_STORAGE_KEY = 'alchemy_demo_credentials';
-        
-        function generateDemoCredentials() {
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2, 8);
-            return {
-                email: `tour-${timestamp}-${random}@alchemy-demo.com`,
-                password: `Demo-${random}!`
-            };
-        }
-        
-        function getStoredDemoCredentials() {
-            try {
-                const stored = sessionStorage.getItem(DEMO_STORAGE_KEY);
-                return stored ? JSON.parse(stored) : null;
-            } catch {
-                return null;
-            }
-        }
-        
-        function setStoredDemoCredentials(creds) {
-            try {
-                sessionStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(creds));
-            } catch {
-                // ignore storage errors
-            }
-        }
+        const demoCredentials = {
+            email: 'demo@alchemy.com',
+            password: 'Demo123!'
+        };
 
         // DOM Elements
         const loginForm = document.getElementById('loginForm');
@@ -529,21 +506,18 @@
             btn.innerHTML = '<span class="spinner"></span> Loading demo...';
             
             try {
-                let creds = getStoredDemoCredentials() || generateDemoCredentials();
                 let credential;
                 
                 try {
-                    credential = await auth.signInWithEmailAndPassword(creds.email, creds.password);
+                    credential = await auth.signInWithEmailAndPassword(demoCredentials.email, demoCredentials.password);
                 } catch (error) {
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        creds = generateDemoCredentials();
-                        credential = await auth.createUserWithEmailAndPassword(creds.email, creds.password);
+                    if (error.code === 'auth/user-not-found') {
+                        credential = await auth.createUserWithEmailAndPassword(demoCredentials.email, demoCredentials.password);
                     } else {
                         throw error;
                     }
                 }
                 
-                setStoredDemoCredentials(creds);
                 await createUserProfile(credential.user);
                 showSuccess('Demo account ready! Redirecting...');
                 setTimeout(() => window.location.href = '/dashboard.html', 800);

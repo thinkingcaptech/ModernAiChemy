@@ -92,8 +92,8 @@
             <p class="eyebrow">Digital Alchemy Labs • 100% Free • BYOK</p>
             <h1>Build, Diagnose, and Sell like an Alchemist.</h1>
             <p class="subtext">Modern Alchemy is a production-grade micro-SaaS turned public portfolio. Sign up free, plug in your own AI keys, and show clients what you can do across diagnostics, content, offers, and live sales simulations.</p>
-            <div style="max-width:620px;margin:20px auto 30px;padding:16px;border:1px dashed rgba(212,175,55,0.4);border-radius:12px;background:rgba(212,175,55,0.08);color:#f8eee0;font-size:14px;line-height:1.6;">
-                <strong style="color:#d4af37;">Demo Access:</strong> Click “Launch Demo Account” on the login page and we’ll auto-create a disposable account (no signup needed). Prefer your own? Use any email ending in <code>.com</code> with a made-up password. No marketing drip, no list building—just instant access so you can evaluate the stack.
+            <div style="max-width:620px;margin:20px auto 30px;padding:16px;border:1px dashed rgba(212,175,55,0.4);border-radius:12px;background:rgba(212,175,55,0.08);color:var(--text-main);font-size:14px;line-height:1.6;">
+                <strong style="color:var(--gold);">Demo Access:</strong> Click “Launch Demo Account” on the login page and we’ll auto-create a disposable account (no signup needed). Prefer your own? Use any email ending in <code>.com</code> with a made-up password. No marketing drip, no list building—just instant access so you can evaluate the stack.
             </div>
             <div class="hero-actions">
                 <a class="cta-btn" href="/login.html">Create Free Account</a>
@@ -155,7 +155,7 @@
     <script>
         const toggle = document.getElementById('themeToggle');
         const body = document.body;
-        const savedTheme = localStorage.getItem('alchemy-landing-theme');
+        const savedTheme = localStorage.getItem('alchemy-landing-theme') || 'light';
         if (savedTheme === 'light') body.classList.add('light');
         toggle.textContent = body.classList.contains('light') ? '☀️' : '🌙';
         toggle.addEventListener('click', () => {
